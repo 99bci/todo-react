@@ -25,15 +25,14 @@ const todoCollection = collection(db, "todos");
 
 // TodoList 컴포넌트를 정의합니다.
 const TodoList = () => {
-  // 상태를 관리하는 useState 훅을 사용하여 할 일 목록과 입력값을 초기화합니다.
+  // 상태를 관리하는 useState 훅을 사용하여 할 일 목록과 입력값, 날짜를 초기화합니다.
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
+  const [date, setDate] = useState("");
 
   const getTodos = async () => {
     // Firestore 쿼리를 만듭니다.
-    const q = query(todoCollection);
-    // const q = query(collection(db, "todos"), where("user", "==", user.uid));
-    // const q = query(todoCollection, orderBy("datetime", "desc"));
+    const q = query(todoCollection, orderBy("datetime", "desc"));
 
     // Firestore에서 할 일 목록을 조회합니다.
     const results = await getDocs(q);
@@ -56,24 +55,30 @@ const TodoList = () => {
   // addTodo 함수는 입력값을 이용하여 새로운 할 일을 목록에 추가하는 함수입니다.
   const addTodo = async () => {
     // 입력값이 비어있는 경우 함수를 종료합니다.
-    if (input.trim() === "") return;
+    if (input.trim() === "" || date.trim() === "") return;
     // 기존 할 일 목록에 새로운 할 일을 추가하고, 입력값을 초기화합니다.
     // {
     //   id: 할일의 고유 id,
     //   text: 할일의 내용,
     //   completed: 완료 여부,
+    //   datetime: 날짜와 시간
     // }
-    // ...todos => {id: 1, text: "할일1", completed: false}, {id: 2, text: "할일2", completed: false}}, ..
+    // ...todos => {id: 1, text: "할일1", completed: false, datetime: "2023-05-02"}, {id: 2, text: "할일2", completed: false}}, ..
 
     // Firestore에 추가한 할 일을 저장합니다.
     const docRef = await addDoc(todoCollection, {
       text: input,
       completed: false,
+      datetime: date,
     });
 
     // id 값을 Firestore에 저장한 값으로 지정합니다.
-    setTodos([...todos, { id: docRef.id, text: input, completed: false }]);
+    setTodos([
+      ...todos,
+      { id: docRef.id, text: input, completed: false, datetime: date },
+    ]);
     setInput("");
+    setDate("");
   };
 
   // toggleTodo 함수는 체크박스를 눌러 할 일의 완료 상태를 변경하는 함수입니다.
@@ -115,7 +120,7 @@ const TodoList = () => {
       <h1 className="text-xl text-white mb-4 font-bold underline underline-offset-4 decoration-wavy">
         Todo List
       </h1>
-      {/* 할 일을 입력받는 텍스트 필드입니다. */}
+      {/* 할 일과 날짜를 입력받는 텍스트 필드입니다. */}
       <input
         type="text"
         // className={styles.itemInput}
@@ -128,6 +133,12 @@ const TodoList = () => {
         className="w-full p-1 mb-4 border border-gray-300 rounded"
         value={input}
         onChange={(e) => setInput(e.target.value)}
+      />
+      <input
+        type="datetime-local"
+        className="p-1 mb-3 border border-gray-300 rounded"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
       />
       {/* 할 일을 추가하는 버튼입니다. */}
       <div class="grid">
@@ -147,7 +158,7 @@ const TodoList = () => {
           //   background-color: #fff;
           //   color: #0070f3;
           // }
-          className="w-40 justify-self-end p-1 mb-4 bg-gray-700 text-white border border-gray-700 rounded hover:bg-white hover:text-gray-700"
+          className="w-40 justify-self-end p-1 mb-10 bg-gray-700 text-white border border-gray-700 rounded hover:bg-white hover:text-gray-700"
           onClick={addTodo}
         >
           Add Todo
