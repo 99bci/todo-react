@@ -5,6 +5,7 @@
 */
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 import TodoItem from "@/components/TodoItem";
 import styles from "@/styles/TodoList.module.css";
@@ -146,14 +147,15 @@ const TodoList = () => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
-      <input
-        type="datetime-local"
-        className="p-1 mb-3 border border-gray-300 rounded"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
-      {/* 할 일을 추가하는 버튼입니다. */}
-      <div class="grid">
+      <div class="flex justify-between">
+        <input
+          type="datetime-local"
+          className="p-1 mb-10 border border-gray-300 rounded"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+        {/* 할 일을 추가하는 버튼입니다. */}
+
         <button
           // className={styles.addButton}
           // -- addButton CSS code --
@@ -170,7 +172,7 @@ const TodoList = () => {
           //   background-color: #fff;
           //   color: #0070f3;
           // }
-          className="w-40 justify-self-end p-1 mb-10 bg-gray-700 text-white border border-gray-700 rounded hover:bg-white hover:text-gray-700"
+          className="w-40 p-1 mb-10 bg-gray-700 text-white border border-gray-700 rounded hover:bg-white hover:text-gray-700"
           onClick={addTodo}
         >
           Add Todo
@@ -187,6 +189,15 @@ const TodoList = () => {
           />
         ))}
       </ul>
+      <button
+        className={`w-40 m-50 p-1
+          text-blue-500
+          border border-blue-500 rounded
+          hover:bg-white hover:text-blue-500`}
+        onClick={() => signOut()}
+      >
+        Sign Out
+      </button>
     </div>
   );
 };
