@@ -8,7 +8,7 @@ export default function Signin() {
   return (
     <div className="flex justify-center h-screen">
       {session ? (
-        <div className="gird m-auto text-center">
+        <div className="grid m-auto text-center">
           <div className="m-4">Signed in as {session.user.name}</div>
           <button
             className={`w-40
@@ -24,7 +24,7 @@ export default function Signin() {
           <button
             className={`w-40
           justify-self-center
-          pe1 mb-4
+          p-1 mb-4
           text-blue-500
           border border-blue-500 rounded
           hover:bg-white hover:text-blue-500`}
